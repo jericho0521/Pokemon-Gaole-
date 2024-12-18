@@ -71,15 +71,9 @@ public class Pokemon {
 
     @Override
     public String toString() {
-        return "Pokemon{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", hp=" + hp +
-                ", attackPower=" + attackPower +
-                ", move='" + move + '\'' +
-                ", moveType='" + moveType + '\'' +
-                ", maxHp=" + maxHp +
-                ", grade=" + grade +
-                '}';
+        return String.format(
+            "Name: %-10s | Type: %-8s | HP: %2d/%-2d | Attack: %-2d | Move: %-12s | Move Type: %-8s | Grade: %d",
+            name, type, hp, maxHp, attackPower, move, moveType, grade
+        );
     }
 }

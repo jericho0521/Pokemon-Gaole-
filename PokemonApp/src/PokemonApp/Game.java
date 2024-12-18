@@ -38,12 +38,18 @@ public class Game {
     }
 
     private void loginOrRegister(Scanner scanner) {
-        while (true) {
-            System.out.println("Welcome to Pokemon Ga-Ole!");
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.print("Enter your choice [1-2]: ");
-            int choice = getValidChoice(scanner, 1, 2);
+    	while (true) {
+    	    System.out.println("=================================");
+    	    System.out.println("         Welcome to              ");
+    	    System.out.println("        Pokémon Ga-Ole!          ");
+    	    System.out.println("=================================");
+    	    System.out.println("1. Login");
+    	    System.out.println("2. Register");
+    	    System.out.println("---------------------------------");
+    	    System.out.print("Enter your choice [1-2]: ");
+
+    	    int choice = getValidChoice(scanner, 1, 2);
+
 
             if (choice == 1) {
                 if (login()) {
