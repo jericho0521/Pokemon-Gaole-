@@ -28,7 +28,9 @@ public class GameUtil {
 
     public static List<Pokemon> generateWildPokemons(int count) {
         List<Pokemon> wildPokemons = new ArrayList<>();
-        String[] pokemonNames = {"Charmander", "Squirtle", "Bulbasaur", "Pikachu", "Eevee", "Meowth", "Gastly", "Dratini", "Machop"};
+        String[] pokemonNames = {
+            "Charmander", "Squirtle", "Bulbasaur", "Pikachu", "Eevee", "Meowth", "Gastly", "Dratini", "Machop", "Gyarados", "Jigglypuff", "Snorlax", "Arcanine", "Alakazam", "Onix"
+        };
         for (int i = 0; i < count; i++) {
             String name = pokemonNames[random.nextInt(pokemonNames.length)];
             Pokemon pokemon = createPokemon(name);
@@ -62,6 +64,14 @@ public class GameUtil {
                 return new DragonPokemon(name, hp, attackPower, maxHp, grade);
             case "Machop":
                 return new FightingPokemon(name, hp, attackPower, maxHp, grade);
+            case "Gyarados":
+                return new WaterPokemon(name, hp + 10, attackPower + 5, maxHp + 10, grade);
+            case "Jigglypuff":
+                return new NormalPokemon(name, hp, attackPower, maxHp, grade);
+            case "Snorlax":
+                return new NormalPokemon(name, hp + 20, attackPower, maxHp + 20, grade);
+            case "Arcanine":
+                return new FirePokemon(name, hp + 10, attackPower + 5, maxHp + 10, grade);
             default:
                 // Default to a normal Pokémon if the name does not match
                 return new NormalPokemon(name, hp, attackPower, maxHp, grade);
@@ -92,10 +102,10 @@ public class GameUtil {
         String pokeball = getRandomPokeball();
         System.out.println("You found a " + pokeball + "!");
 
-        System.out.println("Would you like to use it to catch a Pokémon? (yes/no)");
-        String choice = scanner.nextLine().trim().toLowerCase();
+        System.out.println("Would you like to use it to catch a Pokémon? (1 to catch, 2 to not catch)");
+        int choice = getValidChoice(scanner, 1, 2);
 
-        if (choice.equals("yes")) {
+        if (choice == 1) {
             System.out.println("Choose a wild Pokémon to catch:");
             for (int i = 0; i < wildPokemons.length; i++) {
                 System.out.println((i + 1) + ". " + wildPokemons[i]);
@@ -112,6 +122,8 @@ public class GameUtil {
             } else {
                 System.out.println(chosenWildPokemon.getName() + " escaped!");
             }
+        } else {
+            System.out.println("You chose not to use the " + pokeball + ".");
         }
     }
 

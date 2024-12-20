@@ -103,53 +103,42 @@ public class Battle {
     }
 
     private int calculatePlayerDamage(Pokemon attacker, Pokemon defender) {
-        int memoryLength = 13; // Fixed length of the memory sequence
-        String memorySequence = generateMemorySequence(memoryLength);
+        System.out.println("Press Enter to roll the dice...");
+        scanner.nextLine(); // Wait for user input
+        int dice1 = random.nextInt(6) + 1; // Roll first dice
+        int dice2 = random.nextInt(6) + 1; // Roll second dice
 
-        JLabel label = new JLabel("Remember this sequence: " + memorySequence);
-        JOptionPane pane = new JOptionPane(label, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
-        JDialog dialog = pane.createDialog("Memory Test");
+        System.out.println("\nYou rolled " + dice1 + " and " + dice2 + ".");
 
-        // Create a timer to close the dialog after 10 seconds
-        Timer timer = new Timer(10000, e -> dialog.dispose());
-        timer.setRepeats(false);
-        timer.start();
-
-        dialog.setVisible(true); // Show the sequence
-        timer.stop(); // Ensure the timer stops
-
-        String userSequence = JOptionPane.showInputDialog(null, "Enter the sequence:", "Memory Test", JOptionPane.PLAIN_MESSAGE);
-
-        int correctCount = 0;
-        for (int i = 0; i < Math.min(memorySequence.length(), userSequence.length()); i++) {
-            if (memorySequence.charAt(i) == userSequence.charAt(i)) {
-                correctCount++;
-            } else {
-                break;
-            }
+        int baseDamage;
+        if (dice1 == 6 && dice2 == 6) {
+            System.out.println("Triple Damage!");
+            baseDamage = 30; // Arbitrary triple damage value
+        } else if (dice1 == dice2) {
+            System.out.println("Double Damage!");
+            baseDamage = 20; // Arbitrary double damage value
+        } else if (dice1 + dice2 >= 6 && dice1 + dice2 <= 10) {
+            System.out.println("Normal Damage!");
+            baseDamage = 10; // Arbitrary normal damage value
+        } else if (dice1 + dice2 < 6) {
+            System.out.println("Less than Normal Damage!");
+            baseDamage = 5; // Arbitrary less than normal damage value
+        } else {
+            System.out.println("No Damage or Special Effect.");
+            baseDamage = 0;
         }
-
-        double baseDamage = Math.min(correctCount * 2.5, 32.5); // Max base damage 32.5, each correct number gives 2.5 damage
 
         // Apply type effectiveness
         double effectiveness = Utils.getEffectiveness(attacker.getMoveType(), defender.getType());
         int totalDamage = (int) (baseDamage * effectiveness);
 
-        System.out.println("\nYou remembered " + correctCount + " numbers correctly! You dealt " + totalDamage + " damage!");
+        System.out.println("You dealt " + totalDamage + " damage!");
         return totalDamage;
     }
 
     private int calculateWildDamage(Pokemon attacker, Pokemon defender) {
         // Wild Pokémon attacks with their base attack power modified by type effectiveness
         return Utils.calculateDamage(attacker, defender);
-    }
-
-    private String generateMemorySequence(int length) {
-        StringBuilder sequence = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sequence.append(random.nextInt(10)); // Append a random number (0-9)
-        }
-        return sequence.toString();
     }
 
     private boolean allPlayerPokemonsDefeated() {
@@ -176,6 +165,7 @@ public class Battle {
             try {
                 if (scanner.hasNextInt()) {
                     choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline character
                     if (choice < min || choice > max) {
                         System.out.println("Invalid choice. Please select a number between " + min + " and " + max + ": ");
                     }

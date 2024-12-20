@@ -139,11 +139,16 @@ public class Game {
         if (!file.exists()) {
             return; // No progress to load
         }
+        
+        
 
         player.clearPokemons(); // Clear any existing Pokémon to prevent doubling
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
+            if ((line = reader.readLine()) != null && line.startsWith("Score:")) {
+                player.addScore(Integer.parseInt(line.split(":")[1])); // Load the score
+            }
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 String name = parts[0];
@@ -163,6 +168,7 @@ public class Game {
     private void saveProgress() {
         String filename = player.getName() + "_progress.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("Score:" + player.getScore() + "\n"); // Save the player's score
             for (Pokemon pokemon : player.getPokemons()) {
                 writer.write(String.format("%s,%s,%d,%d,%d,%d\n", pokemon.getName(), pokemon.getType(), pokemon.getHp(), pokemon.getAttackPower(), pokemon.getMaxHp(), pokemon.getGrade()));
             }
@@ -300,19 +306,12 @@ public class Game {
 
     private void generateRandomPokeballAndCatch(Scanner scanner, Pokemon[] wildPokemons) {
         String pokeball = Utils.getRandomPokeball();
-        System.out.println("Congratulations! You won the battle!");
         System.out.println("You found a " + pokeball + "!");
 
-        System.out.println("Would you like to use it to catch a Pokémon? (yes/no)");
-        scanner.nextLine();
-        String choice = scanner.nextLine().trim().toLowerCase();
+        System.out.println("Would you like to use it to catch a Pokémon? (1 to catch, 2 to not catch)");
+        int choice = getValidChoice(scanner, 1, 2);
 
-        while (!choice.equals("yes") && !choice.equals("no")) {
-            System.out.println("Invalid choice. Please enter 'yes' or 'no'.");
-            choice = scanner.nextLine().trim().toLowerCase();
-        }
-
-        if (choice.equals("yes")) {
+        if (choice == 1) {
             System.out.println("Choose a wild Pokémon to catch:");
             for (int i = 0; i < wildPokemons.length; i++) {
                 System.out.println((i + 1) + ". " + wildPokemons[i]);
@@ -320,17 +319,20 @@ public class Game {
 
             int chosenWildIndex = getValidChoice(scanner, 1, wildPokemons.length) - 1;
             Pokemon chosenWildPokemon = wildPokemons[chosenWildIndex];
+            chosenWildPokemon.setHp(chosenWildPokemon.getMaxHp()); // Reset HP to max for catching
 
             boolean caught = Utils.catchPokemon(pokeball, chosenWildPokemon.getGrade());
             if (caught) {
-                chosenWildPokemon.setHp(chosenWildPokemon.getMaxHp()); // Restore to full HP when caught
                 player.addPokemon(chosenWildPokemon);
                 System.out.println("You caught " + chosenWildPokemon.getName() + "!");
             } else {
                 System.out.println(chosenWildPokemon.getName() + " escaped!");
             }
+        } else {
+            System.out.println("You chose not to use the " + pokeball + ".");
         }
     }
+
 
     private void mainMenu(Scanner scanner) {
         while (true) {
@@ -407,15 +409,5 @@ public class Game {
             extraBattlePokemons[i].setMoveType(moveTypes[index]); // Set the move types
         }
         return extraBattlePokemons;
-    }
-
-    private int calculateBattleScore(Pokemon[] wildPokemons) {
-        int score = 0;
-        for (Pokemon wildPokemon : wildPokemons) {
-            if (wildPokemon.isDefeated()) {
-                score += wildPokemon.getMaxHp();
-            }
-        }
-        return score;
     }
 }
