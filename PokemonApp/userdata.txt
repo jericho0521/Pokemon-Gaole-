@@ -2,3 +2,9 @@ jericho,meow123
 meow,123
 mafuyu,mafuyu
 1,1
+hello,hello
+hi,hi
+lol,lol
+p,p
+l,l
+boo,boo

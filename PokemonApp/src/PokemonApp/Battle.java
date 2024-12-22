@@ -1,6 +1,9 @@
 package PokemonApp;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,7 +28,7 @@ public class Battle {
     public void start() {
         System.out.println("\nThe battle begins!");
         Utils.printSeparator();
-        
+
         displayPokemonStats();
 
         while (!allPlayerPokemonsDefeated() && !allWildPokemonsDefeated()) {
@@ -59,8 +62,7 @@ public class Battle {
                     } else {
                         System.out.println("You cannot attack a defeated Pokémon. Choose a different target.");
                     }
-                }
-                else
+                } else
                     j++;
             }
 
@@ -103,12 +105,45 @@ public class Battle {
     }
 
     private int calculatePlayerDamage(Pokemon attacker, Pokemon defender) {
-        System.out.println("Press Enter to roll the dice...");
-        scanner.nextLine(); // Wait for user input
-        int dice1 = random.nextInt(6) + 1; // Roll first dice
-        int dice2 = random.nextInt(6) + 1; // Roll second dice
+        JFrame diceFrame = new JFrame("Dice Roll");
+        diceFrame.setSize(400, 300);
+        diceFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        diceFrame.setLayout(new BorderLayout());
 
-        System.out.println("\nYou rolled " + dice1 + " and " + dice2 + ".");
+        JLabel diceLabel = new JLabel("Press Roll to roll the dice!", SwingConstants.CENTER);
+        diceLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        diceFrame.add(diceLabel, BorderLayout.CENTER);
+
+        JButton rollButton = new JButton("Roll Dice");
+        diceFrame.add(rollButton, BorderLayout.SOUTH);
+
+        int[] diceResults = new int[2];
+
+        rollButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                diceResults[0] = random.nextInt(6) + 1;
+                diceResults[1] = random.nextInt(6) + 1;
+                diceLabel.setText("You rolled: " + diceResults[0] + " and " + diceResults[1]);
+                rollButton.setEnabled(false);
+            }
+        });
+
+        diceFrame.setVisible(true);
+
+        while (rollButton.isEnabled()) {
+            // Wait for dice roll to complete
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        diceFrame.dispose();
+
+        int dice1 = diceResults[0];
+        int dice2 = diceResults[1];
 
         int baseDamage;
         if (dice1 == 6 && dice2 == 6) {

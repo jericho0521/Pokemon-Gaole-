@@ -1,4 +1,4 @@
-Pikachu,Electric,17,10,48,1
+Score:0
 Squirtle,Water,41,9,41,1
 Machop,Fighting,47,13,47,1
 Charmander,Fire,46,12,46,1

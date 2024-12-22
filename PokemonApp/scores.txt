@@ -1,3 +1,4 @@
 1,95
 meow,84
+boo,48
 mafuyu,162
